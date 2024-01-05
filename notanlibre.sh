@@ -132,7 +132,7 @@ if [ $continue_exit_code -eq 0 ]; then
     # Mensaje de despedida
     clear
     dialog --backtitle 'Crealib Libersys, comando "libre" by Charlie Martínez®' \
-        --msgbox "La reinstalación fue exitosa.\nA veces los componentes privativos son necesarios\nLamentamos que ahora tu sistema sea un poco menos libre que antes :-(" 10 40 \
+        --msgbox "La reinstalación fue exitosa.\nA veces los componentes privativos son necesarios.\nLamentamos que ahora tu sistema sea un poco menos libre que antes :-(" 10 40 \
         
     clear
 else
