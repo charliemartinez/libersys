@@ -65,7 +65,7 @@ fi
 # Verifica si está instalado dialog
 if ! command -v dialog &>/dev/null; then
     echo "El programa 'dialog' es necesario para ejecutar este script."
-    echo "¿Desea instalarlo? (1) Aceptar (2) Cancelar"
+    echo "¿Deseas instalarlo? (1) Aceptar (2) Cancelar"
     read -r choice
 
     case $choice in
@@ -113,7 +113,7 @@ fi
 # Solicita confirmación
 clear
 dialog --backtitle "Crealib Libersys v1.0 - Comando 'notanlibre' by Charlie Martínez®" \
-    --yesno "¿Estás seguro de que deseas reinstalar los siguientes componentes?\n\n$SELECCION" 10 60
+    --yesno "¿Confirmas la reinstalación de los siguientes componentes?\n\n$SELECCION" 10 60
 
 # Almacena el código de salida en otra variable
 continue_exit_code=$?
