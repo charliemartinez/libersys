@@ -25,7 +25,7 @@ function _menu_lista() {
 
     SELECCION=$(dialog \
         --backtitle "Crealib Libersys v1.0 - Comando 'notanlibre' by Charlie Martínez®" \
-        --separate-output --checklist "Seleccione componentes a reinstalar (BARRA ESPACIADORA)" 20 60 10 "${opciones[@]}" \
+        --separate-output --checklist "Selecciona componentes a reinstalar (BARRA ESPACIADORA)" 20 60 10 "${opciones[@]}" \
         2>&1 >/dev/tty)
 
     # Si el usuario elige "Cancelar", sale del script
@@ -113,7 +113,7 @@ fi
 # Solicita confirmación
 clear
 dialog --backtitle "Crealib Libersys v1.0 - Comando 'notanlibre' by Charlie Martínez®" \
-    --yesno "¿Confirmas la reinstalación de los siguientes componentes?\n\n$SELECCION" 10 60
+    --yesno "Se van a reinstalar los siguientes elementos:\n\n$SELECCION" 10 60
 
 # Almacena el código de salida en otra variable
 continue_exit_code=$?
