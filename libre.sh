@@ -22,7 +22,7 @@ function _menu_lista() {
 
         SELECCION=$(dialog \
             --backtitle "Crealib Libersys v1.0 - Comando 'libre' by Charlie Martínez®" \
-            --separate-output --checklist "Seleccione componentes a desinstalar (BARRA ESPACIADORA)" 20 60 10 "${opciones[@]}" \
+            --separate-output --checklist "Selecciona componentes a desinstalar (BARRA ESPACIADORA)" 20 60 10 "${opciones[@]}" \
              \
             2>&1 >/dev/tty)
 
@@ -77,7 +77,7 @@ fi
 # Verifica si está instalado dialog
 if ! command -v dialog &>/dev/null; then
     echo "El programa 'dialog' es necesario para ejecutar este script."
-    echo "¿Desea instalarlo? (1) Aceptar (2) Cancelar"
+    echo "¿Deseas instalarlo? (1) Aceptar (2) Cancelar"
     read -r choice
 
     case $choice in
@@ -97,7 +97,7 @@ fi
 if ! command -v vrms &>/dev/null; then
     clear
     dialog --title "REQUISITO NECESARIO" \
-        --yesno "El programa 'vrms' es necesario para ejecutar este script.\n¿Desea instalarlo?" 10 50
+        --yesno "El programa 'vrms' es necesario para ejecutar este script.\n¿Deseas instalarlo?" 10 50
 
     # Si el usuario elige Sí, instala vrms. Si elige No, sale del script.
     case $? in
