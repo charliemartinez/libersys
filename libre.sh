@@ -44,7 +44,7 @@ function _menu_lista() {
         # Muestra la lista de programas seleccionados y confirma la desinstalación
         clear
         dialog --backtitle "Crealib Libersys v1.0 - Comando 'libre' by Charlie Martínez®" \
-            --yesno "Se van a desinstalar los siguientes programas:\n\n$SELECCION" 20 60 \
+            --yesno "Se van a desinstalar los siguientes elementos:\n\n$SELECCION" 20 60 \
             
 
         # Si el usuario elige "Aceptar", retorna 0
