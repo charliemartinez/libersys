@@ -1,0 +1,15 @@
+Package: crealib-libersys
+Version: 1.0.0
+Installed-Size: 204
+Maintainer: Charlie Martinez <cmartinez@quirinux.org>
+Section: system
+Homepage: https://www.quirinux.org
+Architecture: all
+Priority: optional
+Depends: dialog, vrms
+Description: libersys
+ Autor: Charlie Martinez
+ .
+ Liberar tu sistema de componentes privativos (o reinstalarlos sin conexión a internet).
+
+

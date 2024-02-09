@@ -1,0 +1,205 @@
+#!/bin/bash
+
+# Nombre:    CREALIB LIBERSYS - Comando "libre"
+# Autor:    Charlie Martínez® <cmartinez@quirinux.org>
+# Licencia:    https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+# Descripción:    Desinstalar componentes privativos de un sistema GNU/Linux
+# Versión:    1.0
+
+FOLDER_NONFREE="/opt/libersys"
+FILE_LIST="$FOLDER_NONFREE/list"
+FOLDER_DEBS="$FOLDER_NONFREE/debs"
+FOLDER_UNINSTALLED="$FOLDER_NONFREE/desinstalados"
+SELECCION=""
+
+function _menu_lista() {
+    clear
+    while :; do
+        local opciones=("DESINSTALAR TODOS" "" off)
+        for comp in "${componentes[@]}"; do
+            opciones+=("$comp" "" off)
+        done
+
+        SELECCION=$(dialog \
+            --backtitle "Crealib Libersys v1.0 - Comando 'libre' by Charlie Martínez®" \
+            --separate-output --checklist "Selecciona componentes a desinstalar (BARRA ESPACIADORA)" 20 60 10 "${opciones[@]}" \
+             \
+            2>&1 >/dev/tty)
+
+        # Si el usuario elige "Cancelar", sale del script
+        local dialog_exit_code=$?
+        [ $dialog_exit_code -eq 1 ] && return 1
+
+        # Si no se seleccionaron componentes, muestra un mensaje y vuelve a mostrar el menú
+        if [ -z "$SELECCION" ]; then
+            dialog --msgbox "No se seleccionaron componentes." 20 60
+            continue
+        fi
+
+        # Verifica si se seleccionó "DESINSTALAR TODOS"
+        if [[ "$SELECCION" == *"DESINSTALAR TODOS"* ]]; then
+            SELECCION="${componentes[*]}"
+        fi
+
+        # Muestra la lista de programas seleccionados y confirma la desinstalación
+        clear
+        dialog --backtitle "Crealib Libersys v1.0 - Comando 'libre' by Charlie Martínez®" \
+            --yesno "Se van a desinstalar los siguientes elementos:\n\n$SELECCION" 20 60 \
+            
+
+        # Si el usuario elige "Aceptar", retorna 0
+        [ $? -eq 0 ] && return 0
+    done
+}
+
+function _despedida() {
+    
+    clear
+    echo 'Gracias por utilizar Crealib Libersys - Comando "notanlibre"'
+    echo 'Incluido en quirinux-terminal-tools'
+    echo '-------------------------------------------------------'
+    echo 'Licencia GPLv2 | Autor: Charlie Martínez'
+    echo 'Contacto: cmartinez@quirinux.org'
+    echo ''
+	exit 1
+}
+
+# Verifica si el usuario tiene permisos de administrador
+
+if [ "$EUID" -ne 0 ]; then
+    echo ''
+    echo "Este script debe ejecutarse con permisos de root."
+    echo 'Puedes intentarlo con "sudo" tuusuario, "sudo su" o "su root".'
+    echo ''
+    exit 1
+fi
+
+# Verifica si está instalado dialog
+if ! command -v dialog &>/dev/null; then
+    echo "El programa 'dialog' es necesario para ejecutar este script."
+    echo "¿Deseas instalarlo? (1) Aceptar (2) Cancelar"
+    read -r choice
+
+    case $choice in
+        1)
+               apt-get update
+               apt-get install -y dialog
+            ;;
+        *)
+			_despedida
+            ;;
+    esac
+fi
+
+# Continúa la ejecución utilizando la interfaz dialog
+
+# Verifica si está instalado vrms
+if ! command -v vrms &>/dev/null; then
+    clear
+    dialog --title "REQUISITO NECESARIO" \
+        --yesno "El programa 'vrms' es necesario para ejecutar este script.\n¿Deseas instalarlo?" 10 50
+
+    # Si el usuario elige Sí, instala vrms. Si elige No, sale del script.
+    case $? in
+    0)
+        apt-get update
+        apt-get install -y vrms
+        ;;
+    *)
+        _despedida
+        ;;
+    esac
+fi
+
+# Muestra la información sobre la utilidad del programa
+clear
+dialog --backtitle "Crealib Libersys v1.0 - Comando 'libre' by Charlie Martínez®" \
+    --title 'Comando "libre"' \
+    --msgbox '\nEste programa sirve para detectar y desinstalar componentes privativos.\nSiempre podrás volver a instalarlos con el comando "notanlibre".' 10 40 \
+    
+
+# Verifica si existe FILE_NONFREE y si no existe lo crea
+if [ ! -e $FOLDER_NONFREE ]; then
+    mkdir $FOLDER_NONFREE
+fi
+
+# Verifica si existe el fichero LISTA y si no existe lo crea
+if [ ! -e $FILE_LIST ]; then
+    touch $FILE_LIST
+fi
+
+# Crea la carpeta para almacenar paquetes desinstalados
+if [ ! -e $FOLDER_UNINSTALLED ]; then
+    mkdir $FOLDER_UNINSTALLED
+fi
+
+# Obtener la salida de vrms y almacenarla en una variable
+clear
+vrms_output=$(vrms)
+
+# Excluir la línea de texto "Non-free" y todo desde la línea que contiene "Contrib packages"
+nonfree_packages=$(echo "$vrms_output" | sed -n '/Non-free packages installed on/,/Contrib packages/ {/Non-free\|Contrib packages/!p}')
+
+# Almacenar la lista en el archivo FILE_LISTA
+echo "$nonfree_packages" | grep -v '^$' | awk '{print $1}' >$FILE_LIST
+
+# Verifica si existe FOLDER_DEBS y si no existe la crea
+if [ ! -d $FOLDER_DEBS ]; then
+    mkdir $FOLDER_DEBS
+fi
+
+# Cambia al directorio FOLDER_DEBS antes de descargar los paquetes
+(cd "$FOLDER_DEBS" && while read -r package; do
+    apt download "$package"
+done <"$FILE_LIST")
+
+# Lee la lista de componentes privativos instalados en un arreglo
+componentes=($(awk '{print $1}' "$FILE_LIST"))
+
+# Muestra la lista y confirma la desinstalación
+_menu_lista
+dialog_exit_code=$?
+
+# Verifica el código de salida del dialog
+if [ $dialog_exit_code -eq 1 ]; then
+    _despedida
+fi
+
+# Muestra el siguiente cuadro de diálogo
+clear
+dialog --backtitle "Crealib Libersys, comando 'libre' by Charlie Martínez® <cmartínez@quirinux.org>" \
+    --yesno "Algunos componentes como la conexión WiFi podrían dejar de funcionar. ¿Continuar de todas formas?" 10 50 \
+    
+
+# Almacena el código de salida en otra variable
+continue_exit_code=$?
+
+# Si el usuario elige Sí, desinstala los paquetes seleccionados. Si elige No, sale del script.
+if [ $continue_exit_code -eq 0 ]; then
+    # Desinstala los paquetes seleccionados
+    clear
+    for package in $SELECCION; do
+        apt-get remove --purge "$package" -y
+    done
+
+    # Muestra mensajes de depuración antes del movimiento
+    echo "Moviendo paquetes desinstalados a $FOLDER_UNINSTALLED"
+    ls "$FOLDER_DEBS"
+    ls "$FOLDER_UNINSTALLED"
+
+    # Mueve solo los paquetes desinstalados seleccionados a la carpeta correspondiente
+    for package in $SELECCION; do
+        mv "$FOLDER_DEBS"/"${package}"_*.deb "$FOLDER_UNINSTALLED"
+        echo "Moviendo ${package}_*.deb a $FOLDER_UNINSTALLED"
+    done
+
+    # Mensaje de despedida
+    clear
+    dialog --backtitle 'Crealib Libersys, comando "libre" by Charlie Martínez®' \
+        --msgbox "La desinstalación fue exitosa. ¡Ahora tu sistema es más libre que antes!" 10 40 \
+        
+    clear
+else
+    # Usuario elige No
+    _despedida
+fi
