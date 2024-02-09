@@ -43,4 +43,8 @@ http://linux-libre.fsfla.org/pub/linux-libre/releases/6.4-gnu/
 Riky Linux, por las sugerencias valiosas que me hizo en su canal "Gnuxero":
 https://fediverse.tv/w/dfkDrxL2DU5rSTGhiRCJDP
 
+#### Información ampliada y screenshots en:
+
+https://charliemartinez.com.ar/programa-para-liberar-debian/
+
 
