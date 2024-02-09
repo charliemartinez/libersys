@@ -8,22 +8,29 @@ Basta con instalar el paquete .deb desde este repositorio (Releases) o desde el 
 https://repo.quirinux.org/pool/main/c/crealib-libersys/
 
 Una vez descargado se puede instalar con:
-
+```bash
 sudo apt install ./crealib-libersys_1.0.0_all.deb	
+```
 
 O bien:
 
+```bash
 sudo dpkg -i ./crealib-libersys_1.0.0_all.deb	
+```
 
 ## ¿Cómo se usa?
 
 Una vez instalado, nuestro sistema habrá incorporado dos nuevos comandos: libre y notanlibre.
 
-### libre
+```bash
+libre
+```
 
 Utiliza el programa vrms para detectar los componentes privativos instalados en nuestro sistema. 
 
-### notanlibre
+```bash
+notanlibre
+```
 
 Sirve para volver a instalar aquellos programas que hayan sido desinstalados mediante el comando "libre", sin necesidad de conectarnos a internet.
 
