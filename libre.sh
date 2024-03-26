@@ -192,7 +192,8 @@ if [ $continue_exit_code -eq 0 ]; then
         mv "$FOLDER_DEBS"/"${package}"_*.deb "$FOLDER_UNINSTALLED"
         echo "Moviendo ${package}_*.deb a $FOLDER_UNINSTALLED"
     done
-    # Sugerencia de Riky Linux para borrar la cache, probado en Zorin:
+    # Corrección a bug detectado por Riky Linux, ahora el script borrará la cache. 
+    # Probado en Zorín.
     apt autoremove 
     apt-get clean
     # Mensaje de despedida
